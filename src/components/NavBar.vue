@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import AppModal from './AppModal.vue'
+
+const router = useRouter()
 
 const searchUser = ref('')
 const isAuthenticated = ref(true)
 
-const onSearchUser = () => {}
+const onSearchUser = () => {
+  if (searchUser.value) {
+    router.push(`/profile/${searchUser.value}`)
+    searchUser.value = ''
+  }
+}
 </script>
 <template>
   <header class="header">
@@ -24,6 +31,7 @@ const onSearchUser = () => {}
 </template>
 <style scoped>
 .header {
+  padding: 10px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

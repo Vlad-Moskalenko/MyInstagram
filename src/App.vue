@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type AppContainer from './components/AppContainer.vue'
+</script>
 
 <template>
-  <RouterView />
+  <AppContainer>
+    <RouterView />
+  </AppContainer>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import NavBar from '@/components/NavBar.vue'
+import PostTimeline from '@/components/PostTimeline.vue'
 </script>
 
 <template>
-  <NavBar />
+  <PostTimeline />
 </template>

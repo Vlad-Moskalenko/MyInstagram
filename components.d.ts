@@ -22,6 +22,7 @@ declare module 'vue' {
     AppContainer: typeof import('./src/components/AppContainer.vue')['default']
     AppModal: typeof import('./src/components/AppModal.vue')['default']
     AppTimeline: typeof import('./src/components/AppTimeline.vue')['default']
+    ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     AuthForm: typeof import('./src/components/AuthForm.vue')['default']
     Container: typeof import('./src/components/Container.vue')['default']
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
@@ -32,6 +33,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Template: typeof import('./src/components/template.vue')['default']
+    UserBar: typeof import('./src/components/UserBar.vue')['default']
     UserProfile: typeof import('./src/components/UserProfile.vue')['default']
   }
 }

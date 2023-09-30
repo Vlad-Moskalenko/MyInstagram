@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
+import AppModal from './AppModal.vue'
 
 const searchUser = ref('')
+const isAuthenticated = ref(true)
 
 const onSearchUser = () => {}
 </script>
@@ -16,7 +18,8 @@ const onSearchUser = () => {}
       @search="onSearchUser"
       class="search"
     />
-    <RouterLink to="/login">Login/Sign Up</RouterLink>
+    <RouterLink v-if="!isAuthenticated" to="/login">Login/Sign Up</RouterLink>
+    <AppModal v-else title="Logout" />
   </header>
 </template>
 <style scoped>

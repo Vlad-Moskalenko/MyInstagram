@@ -8,6 +8,7 @@ import {validateEmail} from '../utils/validateEmail.js'
 export const useAuthStore = defineStore('counter', () => {
   const user = ref(null)
   const errorMessage = ref("")
+  const isLoading = ref(false)
 
   const clearErrorMessage = () => {
     errorMessage.value = ''
@@ -31,9 +32,12 @@ export const useAuthStore = defineStore('counter', () => {
 
     errorMessage.value = '';
 
+    isLoading.value = true;
+
     const {data: userWithName} = await supabase.from('users').select().eq('name', name).single()
 
     if(userWithName) {
+      isLoading.value = false
       return errorMessage.value = 'Name already exists'
     }
 
@@ -43,6 +47,7 @@ export const useAuthStore = defineStore('counter', () => {
     })
 
     if(error) {
+      isLoading.value = false
       return errorMessage.value = error.message
     }
 
@@ -50,9 +55,11 @@ export const useAuthStore = defineStore('counter', () => {
       name,
       email
     })
+
+    isLoading.value = false
   };
   const handleLogout = () => {};
   const getUser = () => {};
 
-  return { user, handleLogin, handleSignUp, handleLogout, getUser, errorMessage, clearErrorMessage };
+  return { user, isLoading, handleLogin, handleSignUp, handleLogout, getUser, errorMessage, clearErrorMessage, isLoading };
 })

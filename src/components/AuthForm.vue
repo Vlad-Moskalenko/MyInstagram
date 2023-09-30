@@ -26,7 +26,7 @@ onUnmounted(() => {
 })
 </script>
 <template>
-  <form @submit.prevent="handleSubmit" class="form">
+  <form @submit.prevent="handleSubmit" class="form" :aria-disabled="auth.isLoading">
     <a-input
       v-if="route.name === 'signup'"
       type="text"
@@ -38,10 +38,13 @@ onUnmounted(() => {
     <a-typography-text v-if="auth.errorMessage" type="danger" class="error-msg">{{
       auth.errorMessage
     }}</a-typography-text>
-    <a-button htmlType="submit" type="primary" class="submit-btn">{{
+    <a-button htmlType="submit" type="primary" class="submit-btn" :disabled="auth.isLoading">{{
       route.name === 'login' ? 'Login' : 'Register'
     }}</a-button>
   </form>
+  <div v-if="auth.isLoading" class="spinner">
+    <a-spin size="large" />
+  </div>
 </template>
 <style scoped>
 .form {
@@ -58,5 +61,20 @@ onUnmounted(() => {
 
 .submit-btn {
   margin-top: 20px;
+}
+
+.spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
 }
 </style>

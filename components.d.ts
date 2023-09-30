@@ -23,6 +23,8 @@ declare module 'vue' {
     AppContainer: typeof import('./src/components/AppContainer.vue')['default']
     AppModal: typeof import('./src/components/AppModal.vue')['default']
     AppTimeline: typeof import('./src/components/AppTimeline.vue')['default']
+    ATypography: typeof import('ant-design-vue/es')['Typography']
+    ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     AuthForm: typeof import('./src/components/AuthForm.vue')['default']
     Container: typeof import('./src/components/Container.vue')['default']

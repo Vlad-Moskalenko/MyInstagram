@@ -6,7 +6,7 @@ import AppModal from './AppModal.vue'
 const router = useRouter()
 
 const searchUser = ref('')
-const isAuthenticated = ref(true)
+const isAuthenticated = ref(false)
 
 const onSearchUser = () => {
   if (searchUser.value) {

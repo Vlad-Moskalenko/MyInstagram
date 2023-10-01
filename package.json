@@ -17,6 +17,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.37.0",
     "ant-design-vue": "^4.0.3",
+    "nanoid": "^5.0.1",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"

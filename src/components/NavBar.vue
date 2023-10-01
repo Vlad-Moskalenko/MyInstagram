@@ -8,7 +8,6 @@ import AppModal from './AppModal.vue'
 const router = useRouter()
 
 const searchUser = ref('')
-const isAuthenticated = ref(false)
 const auth = useAuthStore()
 
 const onSearchUser = () => {
@@ -28,8 +27,13 @@ const onSearchUser = () => {
       @search="onSearchUser"
       class="search"
     />
-    <RouterLink v-if="!isAuthenticated" to="/login">Login/Sign Up</RouterLink>
-    <AppModal v-else title="Logout" />
+    <div v-if="!auth.isLoadingUser">
+      <RouterLink v-if="!auth.user.email" to="/login">Login/Sign Up</RouterLink>
+      <div v-else class="nav">
+        <RouterLink :to="`/profile/${auth.user.name}`">Profile</RouterLink>
+        <AppModal title="Logout" />
+      </div>
+    </div>
   </header>
 </template>
 <style scoped>
@@ -43,5 +47,11 @@ const onSearchUser = () => {
 
 .search {
   margin-right: auto;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 </style>

@@ -6,6 +6,7 @@ import { posts } from '../data/posts.js'
 
 <template>
   <UserBar
+    :key="$route.params.username"
     username="Vlad"
     :userInfo="{
       posts: 4,

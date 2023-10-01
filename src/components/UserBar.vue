@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
+
+import { useAuthStore } from '@/stores/auth'
+import UploadPhotoModal from './UploadPhotoModal.vue'
+
 import type { UserInfo } from '../entities/User.ts'
+
+const auth = useAuthStore()
+const { params } = useRoute()
 
 defineProps<{
   username: string
@@ -11,6 +19,7 @@ defineProps<{
     <div class="text-container">
       <div class="name-container">
         <a-typography-title :level="2">{{ username }}</a-typography-title>
+        <UploadPhotoModal v-if="auth.user.email && params.username === auth.user.name" />
       </div>
       <div class="stats-container">
         <a-typography-title :level="5">{{ userInfo.posts }} posts</a-typography-title>
@@ -28,6 +37,7 @@ defineProps<{
 }
 
 .text-container {
+  width: 100%;
 }
 
 .stats-container {
@@ -43,6 +53,7 @@ defineProps<{
 
 .name-container {
   display: flex;
+  justify-content: space-between;
 }
 
 .name-container input {

@@ -24,7 +24,7 @@ const handleSubmit = async () => {
   }
 
   if (auth.user.email) {
-    router.push('/')
+    router.push(`/profile/${auth.user.name}`)
     user.value = INITIAL_STATE
   }
 }
@@ -40,9 +40,14 @@ onUnmounted(() => {
       type="text"
       v-model:value="user.name"
       placeholder="Name"
+      autocomplete="username"
     />
-    <a-input type="email" v-model:value="user.email" placeholder="Email" />
-    <a-input-password v-model:value="user.password" placeholder="Password" />
+    <a-input type="email" v-model:value="user.email" placeholder="Email" autocomplete="email" />
+    <a-input-password
+      v-model:value="user.password"
+      placeholder="Password"
+      autocomplete="password"
+    />
     <a-typography-text v-if="auth.errorMessage" type="danger" class="error-msg">{{
       auth.errorMessage
     }}</a-typography-text>

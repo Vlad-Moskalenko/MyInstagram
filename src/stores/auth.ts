@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('counter', () => {
   const user = ref<AuthUser>(INITIAL_STATE)
   const errorMessage = ref("")
   const isLoading = ref(false)
+  const isLoadingUser = ref(false)
 
   const clearErrorMessage = () => {
     errorMessage.value = ''
@@ -106,15 +107,18 @@ export const useAuthStore = defineStore('counter', () => {
 
     isLoading.value = false
   };
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    user.value = INITIAL_STATE
+  };
 
   const getUser = async () => {
-    isLoading.value = true;
+    isLoadingUser.value = true;
 
     const {data} =  await supabase.auth.getUser()
 
     if(!data.user) {
-      isLoading.value = false
+      isLoadingUser.value = false
       return user.value = INITIAL_STATE;
     }
 
@@ -126,8 +130,8 @@ export const useAuthStore = defineStore('counter', () => {
       email: userWithEmail.email
     }
 
-    isLoading.value = false
+    isLoadingUser.value = false
   };
 
-  return { user, isLoading, handleLogin, handleSignUp, handleLogout, getUser, errorMessage, clearErrorMessage };
+  return { user, isLoading, isLoadingUser, handleLogin, handleSignUp, handleLogout, getUser, errorMessage, clearErrorMessage };
 })

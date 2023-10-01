@@ -1,24 +1,28 @@
 <script setup lang="ts">
-import { reactive, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '../stores/auth'
 
-const auth = useAuthStore()
-const route = useRoute()
-
-const user = reactive({
+const INITIAL_STATE = {
   name: '',
   email: '',
   password: ''
-})
+}
 
-const handleSubmit = () => {
-  if (route.name === 'login') {
-    auth.handleLogin(user)
+const auth = useAuthStore()
+const route = useRoute()
+const router = useRouter()
+
+const user = ref(INITIAL_STATE)
+
+const handleSubmit = async () => {
+  route.name === 'login' ? await auth.handleLogin(user.value) : await auth.handleSignUp(user.value)
+
+  if (auth.user.email) {
+    router.push('/')
+    user.value = INITIAL_STATE
   }
-
-  auth.handleSignUp(user)
 }
 
 onUnmounted(() => {

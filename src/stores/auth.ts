@@ -5,12 +5,14 @@ import { supabase } from '../supabase'
 import type {UserLogin, AuthUser, UserSignUp} from '../entities/Auth'
 import {validateEmail} from '../utils/validateEmail.js'
 
+const INITIAL_STATE = {
+  id: '',
+  name: '',
+  email: ''
+}
+
 export const useAuthStore = defineStore('counter', () => {
-  const user = ref<AuthUser>({
-    id: '',
-    name: '',
-    email: 'dsdsds'
-  })
+  const user = ref<AuthUser>(INITIAL_STATE)
   const errorMessage = ref("")
   const isLoading = ref(false)
 
@@ -18,7 +20,7 @@ export const useAuthStore = defineStore('counter', () => {
     errorMessage.value = ''
   }
 
-  const handleLogin = (credentials: UserLogin) => {
+  const handleLogin = async (credentials: UserLogin) => {
     const {email, password } = credentials
 
     if(!validateEmail(email)) {
@@ -29,12 +31,28 @@ export const useAuthStore = defineStore('counter', () => {
       return errorMessage.value = "Password length too short"
     }
 
-    const {data: userWithName} = await supabase.from('users').select().eq('name', name).single()
+    isLoading.value = true;
 
-    if(userWithName) {
+    const {error} = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    if(error) {
       isLoading.value = false
-      return errorMessage.value = 'Name already exists'
+      return errorMessage.value = error.message
     }
+
+    const {data:existingUser} = await supabase.from('users').select().eq('email', email).single()
+
+    user.value = {
+      id: existingUser.id,
+      email: existingUser.email,
+      name: existingUser.name
+    }
+
+    isLoading.value = false
+    errorMessage.value = ''
   };
 
   const handleSignUp = async (credentials: UserSignUp) => {
@@ -89,7 +107,27 @@ export const useAuthStore = defineStore('counter', () => {
     isLoading.value = false
   };
   const handleLogout = () => {};
-  const getUser = () => {};
+
+  const getUser = async () => {
+    isLoading.value = true;
+
+    const {data} =  await supabase.auth.getUser()
+
+    if(!data.user) {
+      isLoading.value = false
+      return user.value = INITIAL_STATE;
+    }
+
+    const {data: userWithEmail} = await supabase.from('users').select().eq('email', data.user.email).single()
+
+    user.value = {
+      id: userWithEmail.id,
+      name: userWithEmail.name,
+      email: userWithEmail.email
+    }
+
+    isLoading.value = false
+  };
 
   return { user, isLoading, handleLogin, handleSignUp, handleLogout, getUser, errorMessage, clearErrorMessage };
 })

@@ -17,7 +17,11 @@ const router = useRouter()
 const user = ref(INITIAL_STATE)
 
 const handleSubmit = async () => {
-  route.name === 'login' ? await auth.handleLogin(user.value) : await auth.handleSignUp(user.value)
+  if (route.name === 'login') {
+    await auth.handleLogin(user.value)
+  } else {
+    await auth.handleSignUp(user.value)
+  }
 
   if (auth.user.email) {
     router.push('/')

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
+
+import { useAuthStore } from '@/stores/auth'
 import AppModal from './AppModal.vue'
 
 const router = useRouter()
 
 const searchUser = ref('')
 const isAuthenticated = ref(false)
+const auth = useAuthStore()
 
 const onSearchUser = () => {
   if (searchUser.value) {

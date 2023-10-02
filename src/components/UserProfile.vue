@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { supabase } from '@/supabase'
+import { useAuthStore } from '@/stores/auth'
 import ImageGallery from './ImageGallery.vue'
 import UserBar from './UserBar.vue'
 import AppSpinner from './AppSpinner.vue'
 
 import type { Post } from '../entities/Post'
 import type { AuthUser } from '../entities/Auth'
-import { useAuthStore } from '@/stores/auth'
+import type { UserInfo } from '@/entities/User'
 
 const auth = useAuthStore()
 const posts = ref<Post[]>([])
 const user = ref<AuthUser | null>(null)
+const userInfo = ref<UserInfo>({
+  posts: 0,
+  followers: 0,
+  following: 0
+})
 const isLoading = ref(false)
 const isFollowing = ref(false)
 const route = useRoute()
@@ -58,6 +64,14 @@ const fetchData = async () => {
   if (postsData) {
     posts.value = postsData
   }
+  await fetchIsFollowing()
+  await fetchFollowersCount()
+
+  userInfo.value = {
+    followers: await fetchFollowersCount(),
+    following: await fetchFollowingCount(),
+    posts: posts.value.length
+  }
 
   isLoading.value = false
 }
@@ -74,6 +88,24 @@ const fetchIsFollowing = async () => {
     if (data) isFollowing.value = true
   }
 }
+
+const fetchFollowingCount = async (): Promise<number> => {
+  const { count } = await supabase
+    .from('following_followers')
+    .select('*', { count: 'exact' })
+    .eq('following_id', user.value?.id)
+
+  return count || 0
+}
+
+const fetchFollowersCount = async (): Promise<number> => {
+  const { count } = await supabase
+    .from('following_followers')
+    .select('*', { count: 'exact' })
+    .eq('follower_id', user.value?.id)
+
+  return count || 0
+}
 </script>
 
 <template>
@@ -83,11 +115,7 @@ const fetchIsFollowing = async () => {
       :key="$route.params.username"
       :user="user"
       :addNewPost="addNewPost"
-      :userInfo="{
-        posts: 4,
-        followers: 100,
-        following: 200
-      }"
+      :userInfo="userInfo"
       :isFollowing="isFollowing"
       :updateIsFollowing="updateIsFollowing"
     />

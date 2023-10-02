@@ -9,6 +9,6 @@ export interface UserSignUp extends UserLogin {
 
 export interface AuthUser {
   id: string,
-  email: string,
   name: string,
+  email: string,
 }

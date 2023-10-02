@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { supabase } from '@/supabase'
@@ -8,16 +8,12 @@ import UserBar from './UserBar.vue'
 import AppSpinner from './AppSpinner.vue'
 
 import type { Post } from '../entities/Post'
+import type { AuthUser } from '../entities/Auth'
 import { useAuthStore } from '@/stores/auth'
-
-interface User {
-  id: string
-  name: string
-}
 
 const auth = useAuthStore()
 const posts = ref<Post[]>([])
-const user = ref<User | null>(null)
+const user = ref<AuthUser | null>(null)
 const isLoading = ref(false)
 const isFollowing = ref(false)
 const route = useRoute()
@@ -26,8 +22,16 @@ onMounted(() => {
   fetchData()
 })
 
+watch(auth.user, () => {
+  fetchIsFollowing()
+})
+
 const addNewPost = (post: Post) => {
   posts.value.unshift(post)
+}
+
+const updateIsFollowing = (follow: boolean) => {
+  isFollowing.value = follow
 }
 
 const fetchData = async () => {
@@ -59,7 +63,16 @@ const fetchData = async () => {
 }
 
 const fetchIsFollowing = async () => {
-  await supabase.from('following_followers').select().eq('follower_id', auth.user.id)
+  if (auth.user.id && auth.user.id !== user.value?.id) {
+    const { data } = await supabase
+      .from('following_followers')
+      .select()
+      .eq('follower_id', user.value?.id)
+      .eq('following_id', auth.user.id)
+      .single()
+
+    if (data) isFollowing.value = true
+  }
 }
 </script>
 
@@ -75,6 +88,8 @@ const fetchIsFollowing = async () => {
         followers: 100,
         following: 200
       }"
+      :isFollowing="isFollowing"
+      :updateIsFollowing="updateIsFollowing"
     />
     <ATypographyTitle v-else :level="2">User Not Found</ATypographyTitle>
     <ImageGallery :posts="posts" />

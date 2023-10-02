@@ -12,18 +12,31 @@ import type { AuthUser } from '@/entities/Auth'
 const auth = useAuthStore()
 const { params } = useRoute()
 
-const { user } = defineProps<{
-  username: string
+const { user, updateIsFollowing } = defineProps<{
   userInfo: UserInfo
   addNewPost: (post: Post) => void
   user: AuthUser
+  updateIsFollowing: (follow: boolean) => void
+  isFollowing: boolean
 }>()
 
-const followUser = async () => {
-  await supabase.from('following_followers').insert({
-    follower_id: auth.user.id,
-    following_id: user.id
-  })
+const followUser = () => {
+  supabase
+    .from('following_followers')
+    .insert({
+      follower_id: user.id,
+      following_id: auth.user.id
+    })
+    .then(() => updateIsFollowing(true))
+}
+
+const unfollowUser = () => {
+  supabase
+    .from('following_followers')
+    .delete()
+    .eq('follower_id', user.id)
+    .eq('following_id', auth.user.id)
+    .then(() => updateIsFollowing(false))
 }
 </script>
 <template>
@@ -33,7 +46,10 @@ const followUser = async () => {
         <a-typography-title :level="2">{{ user.name }}</a-typography-title>
         <div v-if="auth.user.email">
           <UploadPhotoModal :addNewPost="addNewPost" v-if="params.username === auth.user.name" />
-          <a-button v-else @click="followUser" type="dashed">Follow</a-button>
+          <div v-else>
+            <a-button v-if="!isFollowing" @click="followUser" type="dashed">Follow</a-button>
+            <a-button v-else @click="unfollowUser" type="dashed">Following</a-button>
+          </div>
         </div>
       </div>
       <div class="stats-container">

@@ -4,22 +4,37 @@ import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import UploadPhotoModal from './UploadPhotoModal.vue'
 
-import type { UserInfo } from '../entities/User.ts'
+import { supabase } from '@/supabase'
+import type { UserInfo } from '@/entities/User.ts'
+import type { Post } from '@/entities/Post'
+import type { AuthUser } from '@/entities/Auth'
 
 const auth = useAuthStore()
 const { params } = useRoute()
 
-defineProps<{
+const { user } = defineProps<{
   username: string
   userInfo: UserInfo
+  addNewPost: (post: Post) => void
+  user: AuthUser
 }>()
+
+const followUser = async () => {
+  await supabase.from('following_followers').insert({
+    follower_id: auth.user.id,
+    following_id: user.id
+  })
+}
 </script>
 <template>
   <div class="container">
     <div class="text-container">
       <div class="name-container">
-        <a-typography-title :level="2">{{ username }}</a-typography-title>
-        <UploadPhotoModal v-if="auth.user.email && params.username === auth.user.name" />
+        <a-typography-title :level="2">{{ user.name }}</a-typography-title>
+        <div v-if="auth.user.email">
+          <UploadPhotoModal :addNewPost="addNewPost" v-if="params.username === auth.user.name" />
+          <a-button v-else @click="followUser" type="dashed">Follow</a-button>
+        </div>
       </div>
       <div class="stats-container">
         <a-typography-title :level="5">{{ userInfo.posts }} posts</a-typography-title>

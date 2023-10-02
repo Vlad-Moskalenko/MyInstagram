@@ -3,6 +3,7 @@ import { ref, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '../stores/auth'
+import AppSpinner from './AppSpinner.vue'
 
 const INITIAL_STATE = {
   name: '',
@@ -55,10 +56,9 @@ onUnmounted(() => {
       route.name === 'login' ? 'Login' : 'Register'
     }}</a-button>
   </form>
-  <div v-if="auth.isLoading" class="spinner">
-    <a-spin size="large" />
-  </div>
+  <AppSpinner v-if="auth.isLoading" />
 </template>
+
 <style scoped>
 .form {
   margin: 0 auto;
@@ -74,20 +74,5 @@ onUnmounted(() => {
 
 .submit-btn {
   margin-top: 20px;
-}
-
-.spinner {
-  position: fixed;
-  top: 0;
-  left: 0;
-
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: rgba(0, 0, 0, 0.15);
-  pointer-events: none;
 }
 </style>

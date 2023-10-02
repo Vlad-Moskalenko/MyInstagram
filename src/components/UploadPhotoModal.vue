@@ -5,6 +5,13 @@ import { UploadOutlined } from '@ant-design/icons-vue'
 
 import { supabase } from '@/supabase'
 import { useAuthStore } from '@/stores/auth'
+import AppSpinner from './AppSpinner.vue'
+
+import type { Post } from '@/entities/Post'
+
+const props = defineProps<{
+  addNewPost: (post: Post) => void
+}>()
 
 const open = ref(false)
 const caption = ref('')
@@ -29,12 +36,20 @@ const handleOk = async () => {
       return (auth.errorMessage = 'Unable to upload image')
     }
 
-    await supabase.from('posts').insert({
+    const postData = {
       url: data.path,
       caption: caption.value,
       owner_id: auth.user.id
-    })
+    }
+    await supabase.from('posts').insert(postData)
+    props.addNewPost(postData)
+
+    open.value = false
   }
+
+  auth.isLoading = false
+  file.value = null
+  caption.value = ''
 }
 
 const handleUploadChange = (e) => {
@@ -55,8 +70,12 @@ const handleUploadChange = (e) => {
     <a-modal v-model:open="open" title="Upload Photo" @ok="handleOk">
       <input type="file" accept=".jpeg, .png" @change="handleUploadChange" />
       <a-input v-model="caption" :maxlength="50" placeholder="Caption..." />
+      <a-typography-text v-if="auth.errorMessage" type="danger" class="error-msg">{{
+        auth.errorMessage
+      }}</a-typography-text>
     </a-modal>
   </div>
+  <AppSpinner v-if="auth.isLoading" />
 </template>
 
 <style scoped>

@@ -2,6 +2,6 @@
 import UserProfile from '@/components/UserProfile.vue'
 </script>
 <template>
-  <UserProfile />
+  <UserProfile :key="$route.params.username" />
 </template>
 <style scoped></style>

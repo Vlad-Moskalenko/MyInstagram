@@ -7,21 +7,21 @@ defineProps<{
 </script>
 <template>
   <div class="container">
-    <a-image
-      :width="200"
-      class="image"
-      v-for="post in posts"
-      :src="post.url"
-      alt=""
-      :key="post.id"
-    />
+    <div v-for="post in posts" :key="post.url">
+      <a-image
+        :width="200"
+        class="image"
+        :src="`https://vhuwoggcvtrqkjktqzyj.supabase.co/storage/v1/object/public/images/${post.url}`"
+        :alt="post.caption"
+      />
+      <p>{{ post.caption }}</p>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .container {
   display: flex;
-  justify-content: center;
   gap: 5px;
   flex-wrap: wrap;
 }

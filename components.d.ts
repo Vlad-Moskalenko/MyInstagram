@@ -22,6 +22,7 @@ declare module 'vue' {
     AppCard: typeof import('./src/components/AppCard.vue')['default']
     AppContainer: typeof import('./src/components/AppContainer.vue')['default']
     AppModal: typeof import('./src/components/AppModal.vue')['default']
+    AppObserver: typeof import('./src/components/AppObserver.vue')['default']
     AppSpinner: typeof import('./src/components/AppSpinner.vue')['default']
     AppTimeline: typeof import('./src/components/AppTimeline.vue')['default']
     ASpin: typeof import('ant-design-vue/es')['Spin']

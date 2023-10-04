@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Post } from '../entities/Post.ts'
 
+const { VITE_IMG_BASE_URL } = import.meta.env
+
 defineProps<{
   posts: Post[]
 }>()
@@ -11,7 +13,7 @@ defineProps<{
       <a-image
         :width="200"
         class="image"
-        :src="`https://vhuwoggcvtrqkjktqzyj.supabase.co/storage/v1/object/public/images/${post.url}`"
+        :src="`${VITE_IMG_BASE_URL}${post.url}`"
         :alt="post.caption"
       />
       <p>{{ post.caption }}</p>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, reactive } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { supabase } from '@/supabase'
@@ -64,8 +64,8 @@ const fetchData = async () => {
   if (postsData) {
     posts.value = postsData
   }
+
   await fetchIsFollowing()
-  await fetchFollowersCount()
 
   userInfo.value = {
     followers: await fetchFollowersCount(),
@@ -81,8 +81,8 @@ const fetchIsFollowing = async () => {
     const { data } = await supabase
       .from('following_followers')
       .select()
-      .eq('follower_id', user.value?.id)
-      .eq('following_id', auth.user.id)
+      .eq('follower_id', auth.user.id)
+      .eq('following_id', user.value?.id)
       .single()
 
     if (data) isFollowing.value = true
@@ -93,7 +93,7 @@ const fetchFollowingCount = async (): Promise<number> => {
   const { count } = await supabase
     .from('following_followers')
     .select('*', { count: 'exact' })
-    .eq('following_id', user.value?.id)
+    .eq('following_id', auth.user.id)
 
   return count || 0
 }
@@ -102,7 +102,7 @@ const fetchFollowersCount = async (): Promise<number> => {
   const { count } = await supabase
     .from('following_followers')
     .select('*', { count: 'exact' })
-    .eq('follower_id', user.value?.id)
+    .eq('follower_id', auth.user.id)
 
   return count || 0
 }

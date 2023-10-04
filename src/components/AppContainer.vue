@@ -12,5 +12,6 @@ import NavBar from './NavBar.vue'
 <style>
 .layout {
   padding: 0 20px;
+  min-height: 100vh;
 }
 </style>

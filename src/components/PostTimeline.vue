@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import type PostCard from './PostCard.vue'
-import { posts } from '../data/posts.js'
+import { useAuthStore } from '@/stores/auth'
+import TimelineCards from './TimelineCards.vue'
+
+import type AppSpinner from './AppSpinner.vue'
+
+const auth = useAuthStore()
 </script>
 <template>
-  <div class="container">
-    <PostCard v-for="post in posts" :key="post.id" :post="post" />
+  <div v-if="!auth.isLoadingUser">
+    <TimelineCards v-if="auth.user.email" />
+    <h2 v-else>Log in to to see post</h2>
   </div>
+  <AppSpinner v-else />
 </template>
-<style scoped>
-.container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-</style>

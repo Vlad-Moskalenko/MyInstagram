@@ -24,8 +24,8 @@ const followUser = () => {
   supabase
     .from('following_followers')
     .insert({
-      follower_id: user.id,
-      following_id: auth.user.id
+      follower_id: auth.user.id,
+      following_id: user.id
     })
     .then(() => updateIsFollowing(true))
 }
@@ -34,8 +34,8 @@ const unfollowUser = () => {
   supabase
     .from('following_followers')
     .delete()
-    .eq('follower_id', user.id)
-    .eq('following_id', auth.user.id)
+    .eq('follower_id', auth.user.id)
+    .eq('following_id', user.id)
     .then(() => updateIsFollowing(false))
 }
 </script>
